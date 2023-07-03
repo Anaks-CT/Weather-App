@@ -3,8 +3,14 @@ import backgroundImage from "../assets/6246350-field-beauty-nature-sunset-clouds
 import sunrise from '../assets/images-removebg-preview (1).png'
 import sunset from '../assets/pngtree-vector-sunset-icon-png-image_883993-removebg-preview.png'
 import wallpaper from '../assets/wallpaperflare-cropped (1).jpg'
+import { useState, useEffect } from "react";
+import getFormattedWeatherData, { locationGetter } from '../service/weatherService.js'
+import { WeatherData } from "../interface/weather.js";
+import myLocation from '../assets/location.png'
 
 function Home() {
+  const [location, setLocation] = useState(false)
+  const [data, setData] = useState<WeatherData>()
   const getPosition = (
     options?: PositionOptions
   ): Promise<GeolocationPosition> => {
@@ -13,23 +19,40 @@ function Home() {
     });
   };
 
-  // if (navigator.geolocation) {
-  //   getPosition()
-  //     //If user allow location service then will fetch data & send it to get-weather function.
-  //     .then((position) => {
-  //       //   this.getWeather(position.coords.latitude, position.coords.longitude);
-  //       console.log(position);
-  //     })
-  //     .catch((err) => {
-  //       //If user denied location service then standard location weather will le shown on basis of latitude & latitude.
-  //       //   this.getWeather(28.67, 77.22);
-  //       alert(
-  //         "You have disabled location service. Allow 'This APP' to access your location. Your current location will be used for calculating Real time weather."
-  //       );
-  //     });
-  // } else {
-  //   alert("Geolocation not available");
+  // const getWeather = async () => {
+  //   const data = await getFormattedWeatherData({ q: 'london' })
+  //   // setData(data)
+  //   console.log(data)
   // }
+  // getWeather()
+  console.log(data)
+  useEffect(() => {
+    if (navigator.geolocation) {
+      getPosition()
+        //If user allow location service then will fetch data & send it to get-weather function.
+        .then((position) => {
+          //   this.getWeather(position.coords.latitude, position.coords.longitude);
+          // console.log(position);
+          const {coords: {latitude, longitude}} = position
+          locationGetter(latitude, longitude).then(res => {
+            getFormattedWeatherData({ q: res.city.name }).then(res => setData(res))
+          })
+          setLocation(true)
+        })
+        .catch((err) => {
+          console.log('first')
+          setLocation(false)
+          //If user denied location service then standard location weather will le shown on basis of latitude & latitude.
+          //   this.getWeather(28.67, 77.22);
+          // alert(
+          //   "You have disabled location service. Allow 'This APP' to access your location. Your current location will be used for calculating Real time weather."
+          // );
+        });
+    } else {
+      alert("Geolocation not available");
+    }
+  }, [])
+  
 
   return (
     <div
@@ -40,16 +63,16 @@ function Home() {
     >
     <div className="bg-gradient-to-t from-transparent to-black absolute left-0 w-full top-0 md:h-96 h-20"></div>
     <div className="bg-gradient-to-b from-transparent to-black absolute left-0 w-full bottom-0 md:h-96 h-20"></div>
-      {/* <div className="bg-black bg-opacity-75 h-[500px] w-full p-5 md:w-[900px] md:max-w-screen-md mx-auto">
+      {location || <div className="bg-black bg-opacity-75 h-[500px] w-full p-5 md:w-[900px] md:max-w-screen-md mx-auto">
         <img className="mb-7 w-72  mx-auto" src="https://github.com/gauravghai/weatherApp-Reactjs/blob/master/src/images/WeatherIcons.gif?raw=true" alt="" />
         <div className="text-white text-center mb-3 ">Detecting your location</div>
         <div className="text-white text-xs text-center md:w-72 mx-auto md:text-sm"> Your current location will be displayed on the app and used for calculating real time weather</div>
-      </div> */}
+      </div>}
           
-          <div className="md:flex justify-between md:w-[700px] lg:w-[800px] mx-auto">
+          {location && <div className="md:flex justify-between md:w-[700px] lg:w-[800px] mx-auto">
             <div className="w-1/2 pb-4 rounded-sm hidden md:block">
               <div className=" w-full h-full rounded-lg bg-no-repeat bg-cover flex flex-col justify-between text-white" style={{backgroundImage: `url(https://github.com/gauravghai/weatherApp-Reactjs/blob/master/src/images/city.jpg?raw=true)`}}>
-                <div className="z-20 text-2xl text-right p-8">Delhi In</div>
+                <div className="z-20 text-2xl text-right p-8">{data?.name} {data?.country}</div>
                 <div className="flex justify-between p-7 z-20 items-center">
                   <div>
                     <div className="text-3xl">18:29:51</div>
@@ -62,11 +85,11 @@ function Home() {
             <div className="flex flex-wrap md:w-1/2">
                 <div className="w-full px-2 md:px-0">
                     <div className="bg-black bg-opacity-70 text-white relative min-w-0 break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full">
-                    <div className="p-5">
+                    <div className="p-5 flex">
                       <div className="relative flex items-center w-full h-10 rounded-full focus-within:shadow-lg bg-white bg-opacity-50 overflow-hidden px-1">
                         <div className="grid place-items-center h-full w-12 text-gray-300">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
                         <input
@@ -75,6 +98,7 @@ function Home() {
                           id="search"
                           placeholder="Search City..." /> 
                       </div>
+                      <img className="w-10" src={myLocation} alt="" />
                     </div>
                         <div className="px-6 pt-6 relative">
                             <div className="flex mb-4 justify-between items-center">
@@ -152,7 +176,7 @@ function Home() {
                     </div>
                 </div>
             </div>
-          </div>
+          </div>}
 
 
       
