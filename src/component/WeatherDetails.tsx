@@ -1,6 +1,5 @@
 import { WeatherData } from "../interface/weather";
 import { formatToLocalTime, iconUrlFromCode } from "../service/weatherService";
-import Search from "./Search";
 import sunrise from "../assets/images-removebg-preview (1).png";
 import sunset from "../assets/pngtree-vector-sunset-icon-png-image_883993-removebg-preview.png";
 

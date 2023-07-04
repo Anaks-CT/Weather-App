@@ -4,12 +4,12 @@ import getFormattedWeatherData, {
 } from "../service/weatherService.js";
 import { WeatherData } from "../interface/weather.js";
 import { DateTime } from "luxon";
-import MyLocationData from "./myLocationData.js";
 import WeatherDetails from "./WeatherDetails.js";
 import CurrentLocationError from "./CurrentLocationError.js";
 import loader from "../assets/Pulse-1s-200px.gif";
 import Search from "./Search.js";
 import infinityLoader from '../assets/Infinity-1s-200px (3).gif'
+import MyLocationData from "./MyLocationData.js";
 
 function Home() {
   const [location, setLocation] = useState(false);
