@@ -38,10 +38,10 @@ const formatCurrentWeather = (data: CurrentWeatherData) => {
   return {
     lat,
     lon,
-    temp: Math.round(temp - 273.15),
-    feels_like: Math.round(feels_like - 273.15),
-    temp_min: Math.round(temp_min - 273.15),
-    temp_max: Math.round(temp_max - 273.15),
+    temp: Math.round(temp),
+    feels_like: Math.round(feels_like),
+    temp_min: Math.round(temp_min),
+    temp_max: Math.round(temp_max),
     humidity,
     name,
     dt,
@@ -62,7 +62,7 @@ const formatForecastWeather = (data: any) => {
   }).map((d: any) => {
     return {
       day: formatToLocalTime(d.dt, city.timezone, "ccc"),
-      temp: Math.round(d.main.temp - 273.15),
+      temp: Math.round(d.main.temp),
       icon: d.weather[0].icon,
     };
   })
@@ -70,7 +70,7 @@ const formatForecastWeather = (data: any) => {
   const hourly = list.slice(1, 7).map((d: any) => {
     return {
       time: formatToLocalTime(d.dt, city.timezone, "hh:mm a"),
-      temp: Math.round(d.main.temp - 273.15),
+      temp: Math.round(d.main.temp),
       icon: d.weather[0].icon,
     };
   });
