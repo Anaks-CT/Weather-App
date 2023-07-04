@@ -152,7 +152,7 @@ useEffect(() => {
             />
             <div className="flex flex-wrap md:w-1/2">
               <div className="w-full px-2 md:px-0">
-                <div className="bg-black min-h-[672px] justify-center pt-16 flex flex-col bg-opacity-70 text-white relative min-w-0 break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full">
+                <div className="bg-black min-h-[672px] min-w-[345px] justify-center pt-16 flex flex-col bg-opacity-70 text-white relative  break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full">
                   <div className="p-5 flex absolute w-full top-0">
                     <Search search={search} handleOnChange={handleOnChange} />
                   </div>
