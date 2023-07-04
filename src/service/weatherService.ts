@@ -1,11 +1,12 @@
 import { DateTime } from "luxon";
-import { CurrentWeatherData, ForecastWeatherData } from "../interface/weather";
+import { CurrentWeatherData } from "../interface/weather";
+import { WEATHER_API_KEY, WEATHER_API_URL } from "../api";
 
-// const API_KEY = "b0263e86507acb13bd7216736133ab88";
-const API_KEY = "3086716d67fc79e345fd672b3e999c8c";
-// const API_KEY = "7d0580e645ced237c271e1dde0c8fc1c";
+// const WEATHER_API_KEY = "b0263e86507acb13bd7216736133ab88";
+// const WEATHER_API_KEY = "3086716d67fc79e345fd672b3e999c8c";
+// const WEATHER_API_KEY = "7d0580e645ced237c271e1dde0c8fc1c";
 
-const BASE_URL = "https://api.openweathermap.org/data/2.5";
+// const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5";
 
 // https://api.openweathermap.org/data/2.5/onecall?lat=48.8534&lon=2.3488&exclude=current,minutely,hourly,alerts&appid=1fa9ff4126d95b8db54f3897a208e91c&units=metric
 
@@ -13,10 +14,10 @@ const getWeatherData = (
   infoType: string,
   searchParams: { [key: string]: any }
 ): Promise<any> => {
-  const url = new URL(`${BASE_URL}/${infoType}`);
+  const url = new URL(`${WEATHER_API_URL}/${infoType}`);
   url.search = new URLSearchParams({
     ...searchParams,
-    appid: API_KEY,
+    appid: WEATHER_API_KEY,
   }).toString();
 
   return fetch(url).then((res) => res.json());
@@ -34,14 +35,13 @@ const formatCurrentWeather = (data: CurrentWeatherData) => {
   } = data;
 
   const { main: details, icon } = weather[0];
-
   return {
     lat,
     lon,
-    temp,
-    feels_like,
-    temp_min,
-    temp_max,
+    temp: Math.round(temp - 273.15),
+    feels_like: Math.round(feels_like - 273.15),
+    temp_min: Math.round(temp_min - 273.15),
+    temp_max: Math.round(temp_max - 273.15),
     humidity,
     name,
     dt,
@@ -62,7 +62,7 @@ const formatForecastWeather = (data: any) => {
   }).map((d: any) => {
     return {
       day: formatToLocalTime(d.dt, city.timezone, "ccc"),
-      temp: d.main.temp,
+      temp: Math.round(d.main.temp - 273.15),
       icon: d.weather[0].icon,
     };
   })
@@ -70,7 +70,7 @@ const formatForecastWeather = (data: any) => {
   const hourly = list.slice(1, 7).map((d: any) => {
     return {
       time: formatToLocalTime(d.dt, city.timezone, "hh:mm a"),
-      temp: d.main.temp,
+      temp: Math.round(d.main.temp - 273.15),
       icon: d.weather[0].icon,
     };
   });
@@ -87,7 +87,6 @@ const getFormattedWeatherData = async (searchParams: {
   ).then(formatCurrentWeather);
 
   const { lat, lon } = formattedCurrentWeather;
-  console.log(lat, lon);
 
   const formattedForecastWeather = await getWeatherData("forecast", {
     lat,
@@ -110,13 +109,46 @@ export const locationGetter = async (lat: number, lon: number) => {
 
 const formatToLocalTime = (
   secs: number,
-  zone: string,
+  zone: any,
   format = "cccc, dd LLL yyyy' | Local time: 'hh:mm a"
 ) => DateTime.fromSeconds(secs).setZone(zone).toFormat(format);
 
-const iconUrlFromCode = (code: string) =>
+const dateBuilder = (d: Date) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const day = days[d.getDay()];
+  const date = d.getDate();
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  return `${day}, ${date} ${month} ${year}`;
+};
+
+const iconUrlFromCode = (code?: string) =>
   `http://openweathermap.org/img/wn/${code}@2x.png`;
 
 export default getFormattedWeatherData;
 
-export { formatToLocalTime, iconUrlFromCode };
+export { formatToLocalTime, iconUrlFromCode, dateBuilder };
