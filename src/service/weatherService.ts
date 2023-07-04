@@ -57,7 +57,7 @@ const formatCurrentWeather = (data: CurrentWeatherData) => {
 const formatForecastWeather = (data: any) => {
   const { list, city } = data;
   console.log(data);
-  const daily = list.filter((i: any) => {
+  const daily = list.filter((d: any, i: number) => {
     return (i % 8 === 0 || i === 0)
   }).map((d: any) => {
     return {
