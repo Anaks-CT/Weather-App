@@ -137,21 +137,21 @@ useEffect(() => {
 
 
 
-    const [currentDiv, setCurrentDiv] = useState(0);
-    const divs = ['Div 1', 'Div 2', 'Div 3'];
+    // const [currentDiv, setCurrentDiv] = useState(0);
+    // const divs = ['Div 1', 'Div 2', 'Div 3'];
   
-    const handlers = useSwipeable({
-      onSwipedLeft: () => {
-        if (currentDiv > 0) {
-          setCurrentDiv(currentDiv - 1);
-        }
-      },
-      onSwipedRight: () => {
-        if (currentDiv < divs.length - 1) {
-          setCurrentDiv(currentDiv + 1);
-        }
-      },
-    });
+    // const handlers = useSwipeable({
+    //   onSwipedLeft: () => {
+    //     if (currentDiv > 0) {
+    //       setCurrentDiv(currentDiv - 1);
+    //     }
+    //   },
+    //   onSwipedRight: () => {
+    //     if (currentDiv < divs.length - 1) {
+    //       setCurrentDiv(currentDiv + 1);
+    //     }
+    //   },
+    // });
 
 
 
@@ -168,7 +168,7 @@ useEffect(() => {
       {location || <CurrentLocationError />}
       
 
-      <div className="slide" {...handlers}>
+      {/* <div className="slide" {...handlers}>
       {divs.map((div, index) => (
         <div
           key={index}
@@ -178,7 +178,7 @@ useEffect(() => {
           {div}
         </div>
       ))}
-    </div>
+    </div> */}
 
 
       {fullLoader ? <img className="w-16" src={infinityLoader} alt="" />: (
