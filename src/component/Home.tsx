@@ -10,6 +10,8 @@ import loader from "../assets/Pulse-1s-200px.gif";
 import Search from "./Search.js";
 import infinityLoader from '../assets/Infinity-1s-200px (3).gif'
 import MyLocationData from "./MyLocationData.js";
+import { useSwipeable } from 'react-swipeable';
+
 
 function Home() {
   const [location, setLocation] = useState(false);
@@ -17,6 +19,7 @@ function Home() {
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [loading, setLoading] = useState(false);
   const [fullLoader, setFullLoader] = useState(false);
+  const [phoneViewHandler, setPhoneViewHandler] = useState(false)
   const [myData, setMyData] = useState<{
     name: string;
     temp: number;
@@ -131,6 +134,28 @@ useEffect(() => {
     }
   }, []);
 
+
+
+
+    const [currentDiv, setCurrentDiv] = useState(0);
+    const divs = ['Div 1', 'Div 2', 'Div 3'];
+  
+    const handlers = useSwipeable({
+      onSwipedLeft: () => {
+        if (currentDiv > 0) {
+          setCurrentDiv(currentDiv - 1);
+        }
+      },
+      onSwipedRight: () => {
+        if (currentDiv < divs.length - 1) {
+          setCurrentDiv(currentDiv + 1);
+        }
+      },
+    });
+
+
+
+
   return (
     <div
       className="bg-no-repeat bg-fixed bg-cover min-h-screen h-full p-5 py-7 relative flex flex-col justify-center items-center"
@@ -141,6 +166,20 @@ useEffect(() => {
       <div className="bg-gradient-to-t from-transparent to-black absolute left-0 w-full top-0 md:h-96 h-20"></div>
       <div className="bg-gradient-to-b from-transparent to-black absolute left-0 w-full bottom-0 md:h-96 h-20"></div>
       {location || <CurrentLocationError />}
+      
+
+      <div className="slide" {...handlers}>
+      {divs.map((div, index) => (
+        <div
+          key={index}
+          className={`${index === currentDiv ? 'active' : ''}`}
+          style={{ transform: `translateX(${(index - currentDiv) * 100}%)` }}
+        >
+          {div}
+        </div>
+      ))}
+    </div>
+
 
       {fullLoader ? <img className="w-16" src={infinityLoader} alt="" />: (
         location &&  (
@@ -149,8 +188,10 @@ useEffect(() => {
               myData={myData}
               liveDay={liveDay}
               liveTime={liveTime}
+              setPhoneViewHandler={setPhoneViewHandler}
+              phoneViewHandler={phoneViewHandler}
             />
-            <div className="flex flex-wrap md:w-1/2">
+            <div className={`flex flex-wrap ${phoneViewHandler || 'hidden'} md:block md:w-1/2`}>
               <div className="w-full px-2 md:px-0">
                 <div className="bg-black min-h-[672px] min-w-[345px] justify-center pt-16 flex flex-col bg-opacity-70 text-white relative  break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full">
                   <div className="p-5 flex absolute w-full top-0">

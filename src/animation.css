@@ -1,0 +1,17 @@
+.slide {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .slide > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .slide > div:not(.active) {
+    visibility: hidden;
+  }
+  
